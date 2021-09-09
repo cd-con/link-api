@@ -36,12 +36,12 @@ def create_link_request():
     key = request.args.get("key")  # 6-digit code
     if uid is None or key is None:
         return jsonify({"code": 200, "content": {"error": {"title": "Input error",
-                                                           "description": "UID and Key shouldn't be equal to 0"}},
+                                                           "description": "UID and Key must not be equal to None"}},
                         "debug": {}})
     for link in link_queue:
         if link["uid"] == uid:
             return jsonify({"code": 200, "content": {"error": {"title": "Link already in queue",
-                                                               "description": "-"}},
+                                                               "description": ""}},
                             "debug": {}})
 
     link_queue.append({"uid": uid, "paired_uid": None, "key": key, "paired": False})
@@ -55,7 +55,7 @@ def response_link_request():
     key = request.args.get("key")  # 6-digit code
     if uid is None or key is None:
         return jsonify({"code": 200, "content": {"error": {"title": "Input error",
-                                                           "description": "Key shouldn't be equal to None"}},
+                                                           "description": "Key must not be equal to None"}},
                         "debug": {}})
     for link in link_queue:
         if link["key"] == key and not link["paired"]:
@@ -65,7 +65,7 @@ def response_link_request():
                             "debug": {"text": f"Paired with {link['uid']}"}})
 
     return jsonify({"code": 200, "content": {"error": {"title": "Link does not exsist",
-                                                       "description": "-"}},
+                                                       "description": ""}},
                     "debug": {}})
 
 
@@ -74,7 +74,7 @@ def check_linking():
     uid = request.args.get("uid")  # 6-digit code
     if uid is None:
         return jsonify({"code": 200, "content": {"error": {"title": "Input error",
-                                                           "description": "UID shouldn't be equal to None"}},
+                                                           "description": "UID must not be equal to None"}},
                         "debug": {}})
     for link in link_queue:
         if link["uid"] == uid and link["paired"]:
@@ -85,7 +85,7 @@ def check_linking():
             return jsonify({"code": 200, "content": {},
                             "debug": {"text": "Waiting for pairing"}})
     return jsonify({"code": 200, "content": {"error": {"title": "Pairing error",
-                                                       "description": "Linking does not exsist"}},
+                                                       "description": "Link does not exsist"}},
                     "debug": {}})
 
 
@@ -100,7 +100,7 @@ def send():
     data = request.args.get("data")  # 6-digit code
     if uid is None or data is None:
         return jsonify({"code": 200, "content": {"error": {"title": "Input error",
-                                                           "description": "UID and Data shouldn't be equal to None"}},
+                                                           "description": "UID and Data must not be equal to None"}},
                         "debug": {}})
     data_queue.append({"uid": uid, "data": data})
     return jsonify({"code": 200, "content": {},
@@ -112,7 +112,7 @@ def get():
     uid = request.args.get("uid")  # 6-digit code
     if uid is None:
         return jsonify({"code": 200, "content": {"error": {"title": "Input error",
-                                                           "description": "UID shouldn't be equal to None"}},
+                                                           "description": "UID must not be equal to None"}},
                         "debug": {}})
     for data in data_queue:
         if data["uid"] == uid:
@@ -120,7 +120,7 @@ def get():
             return jsonify({"code": 200, "content": {"data": data["data"]},
                             "debug": {}})
     return jsonify({"code": 200, "content": {},
-                    "debug": {"text": "No new data"}})
+                    "debug": {"text": "No new data avaliable"}})
 
 
 if __name__ == '__main__':
